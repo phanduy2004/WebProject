@@ -1,0 +1,32 @@
+package controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.UserModel;
+
+import java.io.IOException;
+
+public class waitingController extends HttpServlet {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+            ServletException, IOException {
+        HttpSession session = req.getSession();
+        if (session != null && session.getAttribute("account") != null) {
+            UserModel u = (UserModel) session.getAttribute("account");
+            req.setAttribute("username", u.getName());
+
+            if (u.getRoleid() == 1) {
+                resp.sendRedirect(req.getContextPath() + "/admin/home");
+            } else if (u.getRoleid() == 2) {
+                resp.sendRedirect(req.getContextPath() + "/manager/home");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/home");
+            }
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/login");
+
+        }
+    }
+}
